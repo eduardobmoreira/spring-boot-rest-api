@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Pessoa</title>
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js"
+		integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+	<style>
+		#top, #bottom, #left, #right {
+			background: rgb(192, 192, 192);
+			position: fixed;
+			}
+			#left, #right {
+				top: 0; bottom: 0;
+				width: 15px;
+				}
+				#left { left: 0; }
+				#right { right: 0; }
+				
+			#top, #bottom {
+				left: 0; right: 0;
+				height: 15px;
+				}
+				#top { top: 0; }
+				#bottom { bottom: 0; }
+				
+				body{
+					margin: 50px;
+				}
+		
+	</style>
+	</head>
+
+<body>
+	<div id="left"></div>
+	<div id="right"></div>
+	<div id="top"></div>
+	<div id="bottom"></div>
+	
+	<h1>Pessoa</h1>
+	<form id="form-pessoa">
+		<label for="id">Id:</label>
+		<input type="text" id="id" name="id"><br><br>
+		<label for="nome">Nome:</label>
+		<input type="text" id="nome" name="nome"><br><br>
+		<label for="dataNascimento">Data de Nascimento:</label>
+		<input type="date" id="dataNascimento" name="dataNascimento"><br><br>
+		<label for="cpf">CPF:</label>
+		<input type="text" id="cpf" name="cpf"><br><br>
+		<label for="sexo">Sexo:</label>
+		<input type="radio" id="sexoM" name="sexo" value="M">
+		<label for="sexoM">Masculino</label>
+		<input type="radio" id="sexoF" name="sexo" value="F">
+		<label for="sexoF">Feminino</label><br><br>
+		<label for="altura">Altura:</label>
+		<input type="number" id="altura" name="altura"><br><br>
+		<label for="peso">Peso:</label>
+		<input type="number" id="peso" name="peso"><br><br>
+		<button type="button" id="btn-incluir">Incluir</button>
+		<button type="button" id="btn-alterar">Alterar</button>
+		<button type="button" id="btn-excluir">Excluir</button>
+		<button type="button" id="btn-pesquisar">Pesquisar</button>
+		<button type="button" id="btn-peso-ideal">Peso Ideal</button>
+	</form>
+	<br/><br/>
+	<div id="resultado"></div>
+	<script>
+		document.getElementById("btn-incluir").addEventListener("click", function () {
+			//Incluir
+			var pessoa = {
+				nome: $("#nome").val(),
+				dataNascimento: $("#dataNascimento").val(),
+				cpf: $("#cpf").val(),
+				sexo: $("#sexo").val,
+				altura: $("#altura").val(),
+				peso: $("#peso").val()				
+			};
+			$.ajax({
+				url: "/api/pessoas/",
+				type: 'POST',
+				contentType: "application/json;charset=utf-8",
+				data: JSON.stringify(pessoa),
+				success: function (pessoaRetornada) {
+					$("#resultado").text(JSON.stringify(pessoaRetornada));
+				},
+				error: function (request, message, error) {
+					alert(message+error);
+				}
+			});
+		});
+
+		document.getElementById("btn-alterar").addEventListener("click", function () {
+			//Alterar
+			var pessoa = {
+				id: $("#id").val(),
+				nome: $("#nome").val(),
+				dataNascimento: $("#dataNascimento").val(),
+				cpf: $("#cpf").val(),
+				sexo: $("#sexo").val,
+				altura: $("#altura").val(),
+				peso: $("#peso").val()				
+			};
+			$.ajax({
+				url: "/api/pessoas/",
+				type: 'PUT',
+				contentType: "application/json;charset=utf-8",
+				data: JSON.stringify(pessoa),
+				success: function (pessoaRetornada) {
+					$("#resultado").text(JSON.stringify(pessoaRetornada));
+				},
+				error: function (request, message, error) {
+					alert(message+error);
+				}
+			});
+		});
+
+		document.getElementById("btn-excluir").addEventListener("click", function () {
+			// Excluir
+			var pessoaId = $("#id").val();
+			$.ajax({
+				url: "/api/pessoas/"+pessoaId,
+				type: 'DELETE',
+				contentType: "application/json;charset=utf-8",
+				data: JSON.stringify(pessoaId),
+				success: function (pessoaRetornada) {
+					$("#resultado").text(JSON.stringify(pessoaRetornada));
+				},
+				error: function (request, message, error) {
+					alert(message+error);
+				}
+			});
+		});
+
+		document.getElementById("btn-pesquisar").addEventListener("click", function () {
+			// Pesquisar
+			var pessoaId = $("#id").val();
+			$.ajax({
+				url: "/api/pessoas/"+pessoaId,
+				type: 'GET',
+				contentType: "application/json;charset=utf-8",
+				success: function (pessoa) {
+					$("#resultado").text(JSON.stringify(pessoa));
+				},
+				error: function (request, message, error) {
+					alert(message+error);
+				}
+			});
+		});
+
+		document.getElementById("btn-peso-ideal").addEventListener("click", function () {
+			// Peso Ideal
+			var pessoaId = $("#id").val();
+			$.ajax({
+				url: "/api/pessoas/"+pessoaId+"/peso-ideal",
+				type: 'GET',
+				contentType: "application/json;charset=utf-8",
+				success: function (peso) {
+					$("#resultado").text(JSON.stringify(peso));
+					alert(JSON.stringify(peso));
+				},
+				error: function (request, message, error) {
+					alert(message+error);
+				}
+			});
+		});
+	</script>
+</body>
+
+</html>
